@@ -1,86 +1,87 @@
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+import { getPublishedCollections } from "@/db/queries";
+import { SiteHeader } from "@/components/site-header";
+import { CollectionCard } from "@/components/collection-card";
+import { cn } from "@/lib/utils";
 
-const previews = [
-  { rank: "01", title: "Best Anime", score: "9.7", type: "Top" },
-  { rank: "02", title: "Burgers I've Tried", score: "8.9", type: "Top" },
-  { rank: "03", title: "Favorite Pokémon", score: "—", type: "Favorites" },
-];
+const FILTERS = [
+  { key: "all", label: "All" },
+  { key: "favorites", label: "Favorites" },
+  { key: "top", label: "Top" },
+  { key: "recent", label: "Recent" },
+] as const;
 
-export default function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ filter?: string }>; // Promise in Next 16 — must await
+}) {
+  const { filter = "all" } = await searchParams;
+  const collections = await getPublishedCollections();
+
+  const filtered = collections.filter((c) =>
+    filter === "favorites"
+      ? c.type === "favorites"
+      : filter === "top"
+        ? c.type === "top"
+        : true
+  );
+
+  const totalItems = collections.reduce((n, c) => n + c.items.length, 0);
+
   return (
-    <main className="scanlines relative flex min-h-full flex-1 flex-col items-center justify-center overflow-hidden px-6 py-20">
-      {/* ambient emerald glow */}
-      <div className="pointer-events-none absolute -top-32 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-emerald/20 blur-[120px]" />
-
-      <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center text-center">
-        <p className="text-glow font-mono text-xs uppercase tracking-[0.35em] text-emerald">
-          // Insert Coin
+    <>
+      <SiteHeader />
+      <main className="scanlines relative mx-auto w-full max-w-6xl flex-1 px-6 py-12">
+        {/* Hero */}
+        <p className="font-mono text-xs uppercase tracking-[0.3em] text-emerald">
+          Collections
         </p>
-
-        <h1 className="mt-5 font-display text-5xl font-bold tracking-tight sm:text-7xl">
-          Joey&apos;s Ultimate List
+        <h1 className="mt-3 max-w-3xl font-display text-4xl font-bold tracking-tight sm:text-6xl">
+          Everything I have opinions about.
         </h1>
-
-        <p className="mt-5 max-w-xl text-balance text-muted-foreground">
-          Favorites I love and Top lists I&apos;ve scored — browse the
-          collections. The data-driven home arrives in Phase&nbsp;3; this screen
-          is a preview of the design system.
+        <p className="mt-4 font-mono text-xs uppercase tracking-widest text-muted-foreground">
+          {collections.length} collections
+          <span className="px-1.5 text-muted-foreground/40">·</span>
+          {totalItems} items
+          <span className="px-1.5 text-muted-foreground/40">·</span>
+          browse below
         </p>
 
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <Button className="notch-sm">Enter</Button>
-          <Button variant="outline" className="notch-sm">
-            Browse favorites
-          </Button>
+        {/* Filters */}
+        <div className="mt-8 flex flex-wrap gap-2">
+          {FILTERS.map((f) => {
+            const active = filter === f.key;
+            return (
+              <Link
+                key={f.key}
+                href={f.key === "all" ? "/" : `/?filter=${f.key}`}
+                className={cn(
+                  "notch-sm border px-4 py-1.5 font-mono text-[11px] uppercase tracking-widest transition-colors",
+                  active
+                    ? "border-emerald/60 bg-emerald/15 text-emerald"
+                    : "border-border text-muted-foreground hover:border-emerald/40 hover:text-foreground"
+                )}
+              >
+                {f.label}
+              </Link>
+            );
+          })}
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-          <Badge className="bg-emerald text-background">Top</Badge>
-          <Badge className="bg-violet text-background">Favorites</Badge>
-          <Badge variant="outline" className="border-gold text-gold">
-            Ranked
-          </Badge>
-        </div>
-
-        {/* Notched, glowing "collection box" previews */}
-        <div className="mt-14 grid w-full grid-cols-1 gap-5 sm:grid-cols-3">
-          {previews.map((c) => (
-            <div
-              key={c.rank}
-              className="notch group relative flex flex-col items-start gap-3 border border-border bg-card p-5 text-left transition duration-200 hover:border-emerald/60 hover:glow-drop"
-            >
-              <div className="flex w-full items-center justify-between font-mono text-xs uppercase tracking-widest text-muted-foreground">
-                <span className="text-gold">#{c.rank}</span>
-                <span>{c.type}</span>
-              </div>
-              <h2 className="font-display text-xl font-semibold">{c.title}</h2>
-              <div className="font-mono text-3xl font-bold text-gold">
-                {c.score}
-              </div>
-              <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                Score / 10
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {/* Jewel palette swatches */}
-        <div className="mt-14 flex items-center gap-4">
-          {[
-            ["bg-emerald", "Emerald"],
-            ["bg-violet", "Violet"],
-            ["bg-gold", "Gold"],
-          ].map(([cls, name]) => (
-            <div key={name} className="flex items-center gap-2">
-              <span className={`size-4 rounded-sm ${cls}`} />
-              <span className="font-mono text-xs text-muted-foreground">
-                {name}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </main>
+        {/* Grid */}
+        {filtered.length > 0 ? (
+          <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {filtered.map((c) => (
+              <CollectionCard key={c.id} collection={c} />
+            ))}
+          </div>
+        ) : (
+          <p className="mt-20 text-center font-mono text-sm text-muted-foreground">
+            No collections here yet.
+          </p>
+        )}
+      </main>
+    </>
   );
 }
