@@ -34,3 +34,26 @@ export const getCollectionBySlug = unstable_cache(
   ["collection-by-slug"],
   { tags: ["collections"] }
 );
+
+// ---- Admin reads (uncached, direct DB) ----
+// The admin pages must always show the live state, including drafts, so these
+// deliberately bypass unstable_cache. Admin routes are dynamic (cookies), so
+// they re-run on every request.
+
+/** Every collection (published AND draft), newest first, with items. */
+export async function getAllCollections(): Promise<CollectionWithItems[]> {
+  return db.query.collections.findMany({
+    with: { items: true },
+    orderBy: (c, { desc }) => [desc(c.createdAt)],
+  });
+}
+
+/** A single collection by id (any status), with items ordered by position. */
+export async function getCollectionById(
+  id: string
+): Promise<CollectionWithItems | undefined> {
+  return db.query.collections.findFirst({
+    where: (c, { eq }) => eq(c.id, id),
+    with: { items: { orderBy: (i, { asc }) => [asc(i.position)] } },
+  });
+}
