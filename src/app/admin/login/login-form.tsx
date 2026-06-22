@@ -36,7 +36,7 @@ export function LoginForm() {
         </p>
       ) : null}
 
-      <Button type="submit" disabled={pending} className="notch-sm w-full">
+      <Button type="submit" disabled={pending} className="w-full">
         {pending ? "Checking…" : "Enter"}
       </Button>
     </form>

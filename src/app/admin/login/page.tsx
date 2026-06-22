@@ -16,7 +16,7 @@ export default function LoginPage() {
           </span>
         </div>
 
-        <div className="notch border border-border bg-card p-6">
+        <div className="rounded-lg border border-border bg-card p-6">
           <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-emerald">
             Admin
           </p>

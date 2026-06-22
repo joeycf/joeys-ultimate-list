@@ -17,7 +17,7 @@ export default function AdminDashboard() {
       </div>
 
       <form action={logout}>
-        <Button type="submit" variant="outline" className="notch-sm">
+        <Button type="submit" variant="outline">
           Log out
         </Button>
       </form>

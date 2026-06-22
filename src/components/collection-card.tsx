@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import type { CollectionWithItems } from "@/db/queries";
 
 /**
- * A clickable Arcade "box you enter" — notched corners + emerald glow on
+ * A clickable Arcade "box you enter" — rounded card + emerald glow on
  * hover. Type tints the badge/edge: top = gold, favorites = violet.
  */
 export function CollectionCard({
@@ -19,7 +19,7 @@ export function CollectionCard({
   return (
     <Link
       href={`/c/${collection.slug}`}
-      className="notch group relative flex flex-col overflow-hidden border border-border bg-card transition duration-200 hover:border-emerald/60 hover:glow-drop focus-visible:border-emerald/60 focus-visible:outline-none"
+      className="group relative flex flex-col overflow-hidden rounded-lg border border-border bg-card transition duration-200 hover:border-emerald/60 hover:glow focus-visible:border-emerald/60 focus-visible:outline-none"
     >
       <div className="relative">
         <PlaceholderImage accent={isTop ? "gold" : "violet"} className="h-36 w-full" />

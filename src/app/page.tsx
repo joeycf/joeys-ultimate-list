@@ -57,7 +57,7 @@ export default async function Home({
                 key={f.key}
                 href={f.key === "all" ? "/" : `/?filter=${f.key}`}
                 className={cn(
-                  "notch-sm border px-4 py-1.5 font-mono text-[11px] uppercase tracking-widest transition-colors",
+                  "rounded-md border px-4 py-1.5 font-mono text-[11px] uppercase tracking-widest transition-colors",
                   active
                     ? "border-emerald/60 bg-emerald/15 text-emerald"
                     : "border-border text-muted-foreground hover:border-emerald/40 hover:text-foreground"
