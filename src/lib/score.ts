@@ -1,8 +1,4 @@
-type Criterion = { key: string; label: string; max: number; weight?: number };
-type Rubric = {
-  ratings: Criterion[];
-  scoreMode: "sum" | "average" | "weighted";
-};
+import type { Rubric } from "@/lib/types";
 
 export function computeScore(rubric: Rubric, ratings: Record<string, number>) {
   const cs = rubric.ratings;
