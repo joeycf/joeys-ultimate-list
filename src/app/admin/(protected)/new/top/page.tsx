@@ -1,5 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { CollectionBasicsForm } from "@/components/admin/collection-basics-form";
+import { createCollection } from "../../actions";
 
 export const metadata: Metadata = {
   title: "New Top — Admin",
@@ -20,13 +22,26 @@ export default function NewTopPage() {
           New · Top
         </p>
         <h1 className="mt-2 font-display text-3xl font-bold tracking-tight">
-          Top builder — coming in the next step
+          Create a scored collection
         </h1>
-        <p className="mt-3 max-w-prose text-muted-foreground">
-          The scored “Top” flow (the rubric builder and the dynamic per-criterion
-          item form) is the second pass of Phase&nbsp;5. The favorites flow is
-          live now — create one from the dashboard.
+        <p className="mt-1 text-sm text-muted-foreground">
+          Start with the basics — you&apos;ll define the rubric and add rated
+          items on the next screen.
         </p>
+      </div>
+
+      <div className="mt-8">
+        <CollectionBasicsForm
+          mode="create"
+          action={createCollection.bind(null, "top")}
+          submitLabel="Create & define rubric"
+          defaultValues={{
+            title: "",
+            slug: "",
+            description: "",
+            published: false,
+          }}
+        />
       </div>
     </div>
   );

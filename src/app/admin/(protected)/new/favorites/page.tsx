@@ -32,7 +32,7 @@ export default function NewFavoritesPage() {
       <div className="mt-8">
         <CollectionBasicsForm
           mode="create"
-          action={createCollection}
+          action={createCollection.bind(null, "favorites")}
           submitLabel="Create & add items"
           defaultValues={{
             title: "",
