@@ -1,7 +1,10 @@
 import { PlaceholderImage } from "@/components/placeholder-image";
+import { RatingProfile } from "@/components/viz/rating-profile";
+import { GroupedMetrics } from "@/components/viz/grouped-metrics";
+import { TopDataTable } from "@/components/viz/top-data-table";
 import { cn } from "@/lib/utils";
 import type { CollectionWithItems } from "@/db/queries";
-import type { Criterion, ItemRatings, Rubric } from "@/lib/types";
+import type { Criterion, ItemRatings, Rubric, TopItemData } from "@/lib/types";
 
 function clamp(n: number) {
   return Math.max(0, Math.min(100, n));
@@ -36,6 +39,18 @@ export function TopView({ collection }: { collection: CollectionWithItems }) {
       ? criteria.reduce((s, c) => s + c.max, 0)
       : Math.max(10, ...criteria.map((c) => c.max));
 
+  // Serializable, rank-stamped data for the client viz components below.
+  const fields = rubric?.fields ?? [];
+  const itemData: TopItemData[] = ranked.map((item, idx) => ({
+    id: item.id,
+    rank: idx + 1,
+    title: item.title,
+    score: item.score ?? 0,
+    ratings: (item.ratings as Record<string, number> | null) ?? {},
+    fieldValues:
+      (item.fieldValues as Record<string, string | number | null> | null) ?? {},
+  }));
+
   return (
     <div className="flex flex-col gap-10">
       {/* Summary stat cards */}
@@ -69,6 +84,23 @@ export function TopView({ collection }: { collection: CollectionWithItems }) {
           ))}
         </ol>
       </section>
+
+      {/* Data visualization — all rubric-driven (Phase 6) */}
+      {itemData.length > 0 ? (
+        <div className="flex flex-col gap-6">
+          {criteria.length > 0 ? (
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+              <RatingProfile criteria={criteria} items={itemData} />
+              <GroupedMetrics
+                criteria={criteria}
+                fields={fields}
+                items={itemData}
+              />
+            </div>
+          ) : null}
+          <TopDataTable criteria={criteria} fields={fields} items={itemData} />
+        </div>
+      ) : null}
     </div>
   );
 }

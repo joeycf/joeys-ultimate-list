@@ -30,3 +30,13 @@ export type ItemRatings = Record<string, number>;
 
 /** An item's custom field values, keyed to rubric.fields[].key. */
 export type ItemFieldValues = Record<string, string | number | null>;
+
+/** Serializable shape passed to the public Top data-viz client components. */
+export type TopItemData = {
+  id: string;
+  rank: number; // 1-based rank by score desc
+  title: string;
+  score: number;
+  ratings: Record<string, number>;
+  fieldValues: Record<string, string | number | null>;
+};
