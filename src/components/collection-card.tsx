@@ -19,7 +19,7 @@ export function CollectionCard({
   return (
     <Link
       href={`/c/${collection.slug}`}
-      className="group relative flex flex-col overflow-hidden rounded-lg border border-border bg-card transition duration-200 hover:border-emerald/60 hover:glow focus-visible:border-emerald/60 focus-visible:outline-none"
+      className="group relative flex h-full flex-col overflow-hidden rounded-lg border border-border bg-card transition duration-200 hover:border-emerald/60 hover:glow focus-visible:border-emerald/60 focus-visible:outline-none"
     >
       <div className="relative">
         <CoverImage
@@ -50,11 +50,11 @@ export function CollectionCard({
         <h3 className="font-display text-lg font-semibold leading-tight transition-colors group-hover:text-emerald">
           {collection.title}
         </h3>
-        {collection.description ? (
-          <p className="line-clamp-2 text-sm text-muted-foreground">
-            {collection.description}
-          </p>
-        ) : null}
+        {/* Always reserve 2 lines so cards stay equal height regardless of
+            whether a description is present (line-clamp caps the long ones). */}
+        <p className="line-clamp-2 min-h-[2.5rem] text-sm text-muted-foreground">
+          {collection.description}
+        </p>
         <div className="mt-auto flex items-center justify-between pt-3 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
           <span>
             {count} {count === 1 ? "item" : "items"}
