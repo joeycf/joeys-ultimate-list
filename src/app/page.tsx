@@ -107,7 +107,14 @@ export default async function Home({
               <div className="mt-8 grid auto-rows-fr grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {filtered.map((c) => (
                   <div key={c.id} className="group/admin relative h-full">
-                    <CollectionCard collection={c} />
+                    <CollectionCard
+                      collection={c}
+                      href={
+                        admin && !c.published
+                          ? `/admin/${c.id}/edit`
+                          : `/c/${c.slug}`
+                      }
+                    />
                     {admin ? (
                       <AdminCardControls
                         id={c.id}

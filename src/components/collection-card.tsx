@@ -10,15 +10,19 @@ import type { CollectionWithItems } from "@/db/queries";
  */
 export function CollectionCard({
   collection,
+  href,
 }: {
   collection: CollectionWithItems;
+  /** Link target; defaults to the public page. The admin home overrides this
+   *  to the edit hub for drafts (whose public page 404s by design). */
+  href?: string;
 }) {
   const isTop = collection.type === "top";
   const count = collection.items.length;
 
   return (
     <Link
-      href={`/c/${collection.slug}`}
+      href={href ?? `/c/${collection.slug}`}
       className="group relative flex h-full flex-col overflow-hidden rounded-lg border border-border bg-card transition duration-200 hover:border-emerald/60 hover:glow focus-visible:border-emerald/60 focus-visible:outline-none"
     >
       <div className="relative">
