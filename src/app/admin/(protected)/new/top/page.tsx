@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { CollectionBasicsForm } from "@/components/admin/collection-basics-form";
-import { createCollection } from "../../actions";
+import { createCollection, uploadImage } from "../../actions";
 
 export const metadata: Metadata = {
   title: "New Top — Admin",
@@ -34,11 +34,13 @@ export default function NewTopPage() {
         <CollectionBasicsForm
           mode="create"
           action={createCollection.bind(null, "top")}
+          uploadAction={uploadImage}
           submitLabel="Create & define rubric"
           defaultValues={{
             title: "",
             slug: "",
             description: "",
+            coverImage: "",
             published: false,
           }}
         />

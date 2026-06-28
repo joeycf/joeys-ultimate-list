@@ -23,6 +23,7 @@ import {
   updateItem,
   updateRubric,
   updateTopItem,
+  uploadImage,
 } from "../../actions";
 
 const SectionLabel = ({ children }: { children: React.ReactNode }) => (
@@ -102,11 +103,13 @@ export default async function EditCollectionPage({
         <CollectionBasicsForm
           mode="edit"
           action={updateCollection.bind(null, collection.id)}
+          uploadAction={uploadImage}
           submitLabel="Save changes"
           defaultValues={{
             title: collection.title,
             slug: collection.slug,
             description: collection.description ?? "",
+            coverImage: collection.coverImage ?? "",
             published: collection.published,
           }}
         />
@@ -136,6 +139,7 @@ export default async function EditCollectionPage({
                 <TopItemFormDialog
                   rubric={rubric}
                   action={addTopItem.bind(null, collection.id)}
+                  uploadAction={uploadImage}
                   trigger={
                     <Button size="sm">
                       <Plus className="size-4" /> Add item
@@ -229,6 +233,7 @@ export default async function EditCollectionPage({
                         <TopItemFormDialog
                           rubric={rubric}
                           action={updateTopItem.bind(null, item.id, collection.id)}
+                          uploadAction={uploadImage}
                           item={{
                             id: item.id,
                             title: item.title,
@@ -278,6 +283,7 @@ export default async function EditCollectionPage({
             </SectionLabel>
             <ItemFormDialog
               action={addItem.bind(null, collection.id)}
+              uploadAction={uploadImage}
               trigger={
                 <Button size="sm">
                   <Plus className="size-4" /> Add item
@@ -368,6 +374,7 @@ export default async function EditCollectionPage({
                   <div className="flex shrink-0 items-center gap-2">
                     <ItemFormDialog
                       action={updateItem.bind(null, item.id, collection.id)}
+                      uploadAction={uploadImage}
                       item={item}
                       trigger={
                         <Button variant="outline" size="sm">

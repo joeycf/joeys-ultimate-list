@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { ImageInput } from "@/components/admin/image-input";
 import { cn } from "@/lib/utils";
 import { slugify } from "@/lib/slugify";
 import {
@@ -63,11 +64,13 @@ function ToggleSwitch({
 export function CollectionBasicsForm({
   mode,
   action,
+  uploadAction,
   defaultValues,
   submitLabel,
 }: {
   mode: "create" | "edit";
   action: (input: CollectionBasicsInput) => Promise<Result>;
+  uploadAction: (formData: FormData) => Promise<{ url?: string; error?: string }>;
   defaultValues: CollectionBasicsInput;
   submitLabel: string;
 }) {
@@ -169,6 +172,25 @@ export function CollectionBasicsForm({
                   {...field}
                 />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="coverImage"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Cover image{" "}
+                <span className="text-muted-foreground">(optional)</span>
+              </FormLabel>
+              <ImageInput
+                value={field.value ?? ""}
+                onChange={field.onChange}
+                uploadAction={uploadAction}
+              />
               <FormMessage />
             </FormItem>
           )}

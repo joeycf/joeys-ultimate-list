@@ -37,6 +37,7 @@ export type TopItemData = {
   rank: number; // 1-based rank by score desc
   title: string;
   score: number;
+  imageUrl: string | null;
   ratings: Record<string, number>;
   fieldValues: Record<string, string | number | null>;
 };

@@ -33,6 +33,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
+import { ImageInput } from "@/components/admin/image-input";
 import { buildTopItemSchema } from "@/lib/validation";
 import { computeScore } from "@/lib/score";
 import type { Rubric } from "@/lib/types";
@@ -63,11 +64,13 @@ const NONE = "__none__";
 export function TopItemFormDialog({
   rubric,
   action,
+  uploadAction,
   item,
   trigger,
 }: {
   rubric: Rubric;
   action: (input: FormValues) => Promise<Result>;
+  uploadAction: (formData: FormData) => Promise<{ url?: string; error?: string }>;
   item?: TopItem;
   trigger: React.ReactNode;
 }) {
@@ -120,8 +123,6 @@ export function TopItemFormDialog({
     if (!isEdit) form.reset(makeDefaults());
     router.refresh();
   }
-
-  const imageUrl = form.watch("imageUrl");
 
   return (
     <Dialog
@@ -176,23 +177,17 @@ export function TopItemFormDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Image URL <span className="text-muted-foreground">(optional)</span>
+                    Image <span className="text-muted-foreground">(optional)</span>
                   </FormLabel>
-                  <FormControl>
-                    <Input type="url" placeholder="https://…" {...field} />
-                  </FormControl>
+                  <ImageInput
+                    value={field.value ?? ""}
+                    onChange={field.onChange}
+                    uploadAction={uploadAction}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
             />
-            {imageUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={imageUrl}
-                alt=""
-                className="h-28 w-full rounded-md border border-border object-cover"
-              />
-            ) : null}
             <FormField
               control={form.control}
               name="link"

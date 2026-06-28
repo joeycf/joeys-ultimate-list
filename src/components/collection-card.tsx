@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { PlaceholderImage } from "@/components/placeholder-image";
+import { CoverImage } from "@/components/cover-image";
 import { cn } from "@/lib/utils";
 import type { CollectionWithItems } from "@/db/queries";
 
@@ -22,7 +22,13 @@ export function CollectionCard({
       className="group relative flex flex-col overflow-hidden rounded-lg border border-border bg-card transition duration-200 hover:border-emerald/60 hover:glow focus-visible:border-emerald/60 focus-visible:outline-none"
     >
       <div className="relative">
-        <PlaceholderImage accent={isTop ? "gold" : "violet"} className="h-36 w-full" />
+        <CoverImage
+          url={collection.coverImage}
+          alt={collection.title}
+          accent={isTop ? "gold" : "violet"}
+          className="h-36 w-full"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
+        />
         <span
           className={cn(
             "absolute inset-x-0 top-0 h-0.5",

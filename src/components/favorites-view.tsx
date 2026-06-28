@@ -1,5 +1,5 @@
 import { Heart } from "lucide-react";
-import { PlaceholderImage } from "@/components/placeholder-image";
+import { CoverImage } from "@/components/cover-image";
 import type { CollectionWithItems } from "@/db/queries";
 
 /** Favorites = a flat, unscored card grid with violet tag accents. */
@@ -24,7 +24,13 @@ export function FavoritesView({
           className="group flex flex-col overflow-hidden rounded-lg border border-border bg-card transition duration-200 hover:-translate-y-0.5 hover:border-violet/60 hover:glow-violet"
         >
           <div className="relative">
-            <PlaceholderImage accent="violet" className="h-40 w-full" />
+            <CoverImage
+              url={item.imageUrl}
+              alt={item.title}
+              accent="violet"
+              className="h-40 w-full"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
+            />
             <span className="absolute left-3 top-3 inline-flex size-7 items-center justify-center rounded-md bg-violet/15 text-violet">
               <Heart className="size-3.5" />
             </span>

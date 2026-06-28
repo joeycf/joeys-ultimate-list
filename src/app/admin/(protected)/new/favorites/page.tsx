@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { CollectionBasicsForm } from "@/components/admin/collection-basics-form";
-import { createCollection } from "../../actions";
+import { createCollection, uploadImage } from "../../actions";
 
 export const metadata: Metadata = {
   title: "New Favorites — Admin",
@@ -33,11 +33,13 @@ export default function NewFavoritesPage() {
         <CollectionBasicsForm
           mode="create"
           action={createCollection.bind(null, "favorites")}
+          uploadAction={uploadImage}
           submitLabel="Create & add items"
           defaultValues={{
             title: "",
             slug: "",
             description: "",
+            coverImage: "",
             published: false,
           }}
         />

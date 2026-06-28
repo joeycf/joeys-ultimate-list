@@ -26,6 +26,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { ImageInput } from "@/components/admin/image-input";
 import { favoriteItemSchema, type FavoriteItemInput } from "@/lib/validation";
 
 type Result = {
@@ -45,10 +46,12 @@ export type ItemValues = {
 
 export function ItemFormDialog({
   action,
+  uploadAction,
   item,
   trigger,
 }: {
   action: (input: FavoriteItemInput) => Promise<Result>;
+  uploadAction: (formData: FormData) => Promise<{ url?: string; error?: string }>;
   item?: ItemValues;
   trigger: React.ReactNode;
 }) {
@@ -94,8 +97,6 @@ export function ItemFormDialog({
     if (!isEdit) form.reset(emptyValues);
     router.refresh();
   }
-
-  const imageUrl = form.watch("imageUrl");
 
   return (
     <Dialog
@@ -168,31 +169,18 @@ export function ItemFormDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Image URL{" "}
+                    Image{" "}
                     <span className="text-muted-foreground">(optional)</span>
                   </FormLabel>
-                  <FormControl>
-                    <Input
-                      type="url"
-                      inputMode="url"
-                      placeholder="https://…"
-                      {...field}
-                    />
-                  </FormControl>
+                  <ImageInput
+                    value={field.value ?? ""}
+                    onChange={field.onChange}
+                    uploadAction={uploadAction}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
             />
-
-            {imageUrl ? (
-              // Plain <img> on purpose (no next/image remote-host config this pass).
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={imageUrl}
-                alt=""
-                className="h-28 w-full rounded-md border border-border object-cover"
-              />
-            ) : null}
 
             <FormField
               control={form.control}

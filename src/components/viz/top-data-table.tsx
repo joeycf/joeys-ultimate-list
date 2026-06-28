@@ -29,6 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { CoverImage } from "@/components/cover-image";
 import { cn } from "@/lib/utils";
 import type { Criterion, RubricField, TopItemData } from "@/lib/types";
 
@@ -70,7 +71,16 @@ export function TopDataTable({
         accessorKey: "title",
         header: "Title",
         cell: ({ row }) => (
-          <span className="font-medium">{row.original.title}</span>
+          <div className="flex items-center gap-2.5">
+            <CoverImage
+              url={row.original.imageUrl}
+              alt=""
+              accent="muted"
+              className="size-7 shrink-0 rounded"
+              sizes="28px"
+            />
+            <span className="font-medium">{row.original.title}</span>
+          </div>
         ),
       },
     ];

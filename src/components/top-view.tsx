@@ -1,4 +1,4 @@
-import { PlaceholderImage } from "@/components/placeholder-image";
+import { CoverImage } from "@/components/cover-image";
 import { RatingProfile } from "@/components/viz/rating-profile";
 import { GroupedMetrics } from "@/components/viz/grouped-metrics";
 import { TopDataTable } from "@/components/viz/top-data-table";
@@ -46,6 +46,7 @@ export function TopView({ collection }: { collection: CollectionWithItems }) {
     rank: idx + 1,
     title: item.title,
     score: item.score ?? 0,
+    imageUrl: item.imageUrl,
     ratings: (item.ratings as Record<string, number> | null) ?? {},
     fieldValues:
       (item.fieldValues as Record<string, string | number | null> | null) ?? {},
@@ -77,6 +78,7 @@ export function TopView({ collection }: { collection: CollectionWithItems }) {
               rank={idx + 1}
               title={item.title}
               score={item.score}
+              imageUrl={item.imageUrl}
               ratings={(item.ratings as ItemRatings | null) ?? {}}
               criteria={criteria}
               maxScale={maxScale}
@@ -140,6 +142,7 @@ function LeaderboardRow({
   rank,
   title,
   score,
+  imageUrl,
   ratings,
   criteria,
   maxScale,
@@ -147,6 +150,7 @@ function LeaderboardRow({
   rank: number;
   title: string;
   score: number | null;
+  imageUrl: string | null;
   ratings: ItemRatings;
   criteria: Criterion[];
   maxScale: number;
@@ -180,9 +184,12 @@ function LeaderboardRow({
       </div>
 
       {/* Thumbnail */}
-      <PlaceholderImage
+      <CoverImage
+        url={imageUrl}
+        alt={title}
         accent={isFirst ? "gold" : "emerald"}
-        className="hidden size-12 shrink-0 rounded-md sm:flex"
+        className="hidden size-12 shrink-0 rounded-md sm:block"
+        sizes="48px"
       />
 
       {/* Title + per-criterion bars */}
