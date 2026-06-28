@@ -13,3 +13,15 @@ export async function requireAdmin(): Promise<void> {
     redirect("/admin/login");
   }
 }
+
+/**
+ * Non-redirecting sibling of {@link requireAdmin}: returns whether the current
+ * request carries a valid admin session. For conditionally rendering admin UI
+ * only — NOT a security boundary (mutations still call requireAdmin, and
+ * /admin/* stays gated). Reading the cookie opts the caller into dynamic
+ * rendering.
+ */
+export async function isAdmin(): Promise<boolean> {
+  const token = (await cookies()).get("session")?.value;
+  return !!token && !!(await verifySession(token));
+}
