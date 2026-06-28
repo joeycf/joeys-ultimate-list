@@ -68,11 +68,10 @@
 }
 
 /* ------------------------------------------------------------------ *
- * Dark-first palette. This IS the theme today; light mode comes later
- * by splitting :root (light) from .dark (dark).
+ * Dark-first palette. Dark is the default (:root); `.light` overrides
+ * for the light theme (next-themes toggles the `class` on <html>).
  * ------------------------------------------------------------------ */
-:root,
-.dark {
+:root {
   color-scheme: dark;
 
   --background: #0a0a0b; /* bg */
@@ -115,6 +114,57 @@
   --sidebar-accent-foreground: #f4f4f5;
   --sidebar-border: #26262b;
   --sidebar-ring: #2dd4a8;
+}
+
+/* Light theme — near-white neutrals; jewels deepened so accents (esp. gold
+ * scores) read on a light background. Overrides --color-emerald/violet/gold
+ * too, so glow utilities and selection follow the theme. */
+.light {
+  color-scheme: light;
+
+  --background: #fbfbfc;
+  --foreground: #18181b;
+
+  --card: #ffffff;
+  --card-foreground: #18181b;
+  --popover: #ffffff;
+  --popover-foreground: #18181b;
+
+  --primary: #0d9488; /* deepened emerald — reads with white text */
+  --primary-foreground: #ffffff;
+
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --muted: #f4f4f5;
+  --muted-foreground: #6b7280;
+  --accent: #f1f1f4;
+  --accent-foreground: #18181b;
+
+  --destructive: #dc2626;
+
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+  --ring: #0d9488;
+
+  /* deepened jewels for light-bg legibility */
+  --color-emerald: #0d9488;
+  --color-violet: #6d4ad1;
+  --color-gold: #a16207;
+
+  --chart-1: #0d9488;
+  --chart-2: #6d4ad1;
+  --chart-3: #a16207;
+  --chart-4: #be185d;
+  --chart-5: #2563eb;
+
+  --sidebar: #ffffff;
+  --sidebar-foreground: #18181b;
+  --sidebar-primary: #0d9488;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f4f4f5;
+  --sidebar-accent-foreground: #18181b;
+  --sidebar-border: #e4e4e7;
+  --sidebar-ring: #0d9488;
 }
 
 @layer base {

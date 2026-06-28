@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
+import { ThemeProvider } from "@/components/theme-provider";
+import { siteUrl, SITE_NAME } from "@/lib/site";
 import "./globals.css";
 
 // Display / headings / titles
@@ -23,9 +25,24 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+const DESCRIPTION =
+  "Favorites I love and Top lists I've scored — a personal ranking system.";
+
 export const metadata: Metadata = {
-  title: "Joey's Ultimate List",
-  description: "Favorites and ranked Top lists — browse the collections.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: SITE_NAME,
+    template: `%s · ${SITE_NAME}`,
+  },
+  description: DESCRIPTION,
+  applicationName: SITE_NAME,
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    title: SITE_NAME,
+    description: DESCRIPTION,
+  },
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({
@@ -36,9 +53,19 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark ${spaceGrotesk.variable} ${hankenGrotesk.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      suppressHydrationWarning
+      className={`${spaceGrotesk.variable} ${hankenGrotesk.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
