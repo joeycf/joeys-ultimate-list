@@ -1,7 +1,9 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getPublishedCollections } from "@/db/queries";
 import { SiteHeader } from "@/components/site-header";
 import { CollectionCard } from "@/components/collection-card";
+import { EmptyState } from "@/components/empty-state";
 import { cn } from "@/lib/utils";
 
 const FILTERS = [
@@ -10,6 +12,10 @@ const FILTERS = [
   { key: "top", label: "Top" },
   { key: "recent", label: "Recent" },
 ] as const;
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default async function Home({
   searchParams,
@@ -48,38 +54,50 @@ export default async function Home({
           browse below
         </p>
 
-        {/* Filters */}
-        <div className="mt-8 flex flex-wrap gap-2">
-          {FILTERS.map((f) => {
-            const active = filter === f.key;
-            return (
-              <Link
-                key={f.key}
-                href={f.key === "all" ? "/" : `/?filter=${f.key}`}
-                className={cn(
-                  "rounded-md border px-4 py-1.5 font-mono text-[11px] uppercase tracking-widest transition-colors",
-                  active
-                    ? "border-emerald/60 bg-emerald/15 text-emerald"
-                    : "border-border text-muted-foreground hover:border-emerald/40 hover:text-foreground"
-                )}
-              >
-                {f.label}
-              </Link>
-            );
-          })}
-        </div>
-
-        {/* Grid */}
-        {filtered.length > 0 ? (
-          <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((c) => (
-              <CollectionCard key={c.id} collection={c} />
-            ))}
-          </div>
+        {collections.length === 0 ? (
+          <EmptyState
+            className="mt-12"
+            title="Nothing here yet."
+            description="New collections are on the way. Check back soon."
+          />
         ) : (
-          <p className="mt-20 text-center font-mono text-sm text-muted-foreground">
-            No collections here yet.
-          </p>
+          <>
+            {/* Filters */}
+            <div className="mt-8 flex flex-wrap gap-2">
+              {FILTERS.map((f) => {
+                const active = filter === f.key;
+                return (
+                  <Link
+                    key={f.key}
+                    href={f.key === "all" ? "/" : `/?filter=${f.key}`}
+                    className={cn(
+                      "rounded-md border px-4 py-1.5 font-mono text-[11px] uppercase tracking-widest transition-colors",
+                      active
+                        ? "border-emerald/60 bg-emerald/15 text-emerald"
+                        : "border-border text-muted-foreground hover:border-emerald/40 hover:text-foreground"
+                    )}
+                  >
+                    {f.label}
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* Grid */}
+            {filtered.length > 0 ? (
+              <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {filtered.map((c) => (
+                  <CollectionCard key={c.id} collection={c} />
+                ))}
+              </div>
+            ) : (
+              <EmptyState
+                className="mt-8"
+                title={`No ${filter} collections yet.`}
+                description="Try a different filter above."
+              />
+            )}
+          </>
         )}
       </main>
     </>

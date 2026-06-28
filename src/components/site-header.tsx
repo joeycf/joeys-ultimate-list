@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { MainNav } from "@/components/main-nav";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 /** Shared public top nav (brand + mono links), seen in both mockups. */
 export function SiteHeader() {
@@ -11,17 +13,10 @@ export function SiteHeader() {
             Joey&apos;s Ultimate List
           </span>
         </Link>
-        <nav className="flex items-center gap-5 font-mono text-xs uppercase tracking-widest text-muted-foreground">
-          <Link href="/?filter=favorites" className="transition-colors hover:text-foreground">
-            Favorites
-          </Link>
-          <Link href="/?filter=top" className="transition-colors hover:text-foreground">
-            Top
-          </Link>
-          <span className="hidden cursor-default text-muted-foreground/40 sm:inline">
-            About
-          </span>
-        </nav>
+        <div className="flex items-center gap-1">
+          <MainNav />
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   );

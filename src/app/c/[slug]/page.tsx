@@ -6,6 +6,7 @@ import { SiteHeader } from "@/components/site-header";
 import { FavoritesView } from "@/components/favorites-view";
 import { TopView } from "@/components/top-view";
 import { Badge } from "@/components/ui/badge";
+import { EmptyState } from "@/components/empty-state";
 import { cn } from "@/lib/utils";
 import type { Rubric } from "@/lib/types";
 
@@ -16,10 +17,26 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const collection = await getCollectionBySlug(slug);
-  if (!collection) return { title: "Not found — Joey's Ultimate List" };
+  if (!collection) return { title: "Not found" };
+
+  const count = collection.items.length;
+  const fallback =
+    collection.type === "top"
+      ? `${count} ${count === 1 ? "item" : "items"} ranked.`
+      : `${count} ${count === 1 ? "pick" : "picks"}.`;
+  const description = collection.description?.trim() || fallback;
+  const path = `/c/${collection.slug}`;
+
   return {
-    title: `${collection.title} — Joey's Ultimate List`,
-    description: collection.description ?? undefined,
+    title: collection.title,
+    description,
+    alternates: { canonical: path },
+    openGraph: {
+      type: "website",
+      url: path,
+      title: collection.title,
+      description,
+    },
   };
 }
 
@@ -91,7 +108,16 @@ export default async function CollectionPage({
         </header>
 
         <div className="mt-8">
-          {isTop ? (
+          {collection.items.length === 0 ? (
+            <EmptyState
+              title="This list is empty for now."
+              description={
+                isTop
+                  ? "No ranked items yet — check back soon."
+                  : "No picks here yet — check back soon."
+              }
+            />
+          ) : isTop ? (
             <TopView collection={collection} />
           ) : (
             <FavoritesView collection={collection} />

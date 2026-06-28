@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { NewCollectionMenu } from "@/components/admin/new-collection-menu";
 import { ConfirmDialog } from "@/components/admin/confirm-dialog";
+import { EmptyState } from "@/components/empty-state";
 import { deleteCollection } from "./actions";
 
 export default async function AdminDashboard() {
@@ -28,10 +29,20 @@ export default async function AdminDashboard() {
       </div>
 
       {collections.length === 0 ? (
-        <p className="rounded-lg border border-border bg-card p-10 text-center text-muted-foreground">
-          No collections yet. Use <span className="text-foreground">+ New</span> to
-          create your first one.
-        </p>
+        <EmptyState
+          title="You haven't made any lists yet."
+          description="Start with a flat Favorites list, or a scored Top list with a rubric."
+          action={
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <Button asChild>
+                <Link href="/admin/new/favorites">New Favorites</Link>
+              </Button>
+              <Button asChild variant="outline">
+                <Link href="/admin/new/top">New Top</Link>
+              </Button>
+            </div>
+          }
+        />
       ) : (
         <ul className="flex flex-col gap-2">
           {collections.map((c) => {

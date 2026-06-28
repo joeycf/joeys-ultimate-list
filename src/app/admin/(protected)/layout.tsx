@@ -3,6 +3,7 @@ import { requireAdmin } from "@/lib/auth";
 import { logout } from "@/app/admin/actions";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 // Everything under this route group is gated. The login page lives at
 // /admin/login (outside this group) so it stays reachable when logged out.
@@ -43,6 +44,7 @@ export default async function ProtectedAdminLayout({
                 Log out
               </Button>
             </form>
+            <ThemeToggle />
           </div>
         </div>
       </header>
@@ -51,7 +53,7 @@ export default async function ProtectedAdminLayout({
         {children}
       </main>
 
-      <Toaster theme="dark" position="top-center" />
+      <Toaster position="top-center" />
     </div>
   );
 }
