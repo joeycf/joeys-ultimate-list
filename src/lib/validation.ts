@@ -30,6 +30,7 @@ export const collectionBasicsSchema = z.object({
     .max(120)
     .regex(SLUG_RE, "Lowercase letters, numbers, and hyphens only"),
   description: z.string().trim().max(500),
+  coverImage: optionalUrl,
   published: z.boolean(),
 });
 export type CollectionBasicsInput = z.infer<typeof collectionBasicsSchema>;

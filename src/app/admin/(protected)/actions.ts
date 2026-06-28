@@ -1,5 +1,6 @@
 "use server";
 
+import { put } from "@vercel/blob";
 import { asc, eq } from "drizzle-orm";
 import { revalidatePath, updateTag } from "next/cache";
 import { db } from "@/db";
@@ -46,6 +47,45 @@ function clean(value: string | undefined | null): string | null {
 }
 
 // -------------------------------------------------------------------------
+// Images (Vercel Blob)
+// -------------------------------------------------------------------------
+
+const UPLOAD_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const MAX_UPLOAD_BYTES = 4 * 1024 * 1024; // headroom under Vercel's ~4.5MB body limit
+
+/**
+ * Upload an image to the public Blob store from an admin form. Validated
+ * server-side (type + size); returns the public blob URL. (>4MB would need a
+ * client upload flow — out of scope.)
+ */
+export async function uploadImage(
+  formData: FormData
+): Promise<{ url?: string; error?: string }> {
+  await requireAdmin();
+
+  const file = formData.get("file");
+  if (!(file instanceof File) || file.size === 0) {
+    return { error: "No file provided." };
+  }
+  if (!UPLOAD_TYPES.includes(file.type)) {
+    return { error: "Use a JPEG, PNG, or WebP image." };
+  }
+  if (file.size > MAX_UPLOAD_BYTES) {
+    return { error: "Image must be 4MB or smaller." };
+  }
+
+  try {
+    const blob = await put(file.name || "image", file, {
+      access: "public",
+      addRandomSuffix: true,
+    });
+    return { url: blob.url };
+  } catch {
+    return { error: "Upload failed. Please try again." };
+  }
+}
+
+// -------------------------------------------------------------------------
 // Collections
 // -------------------------------------------------------------------------
 
@@ -77,6 +117,7 @@ export async function createCollection(
         slug,
         title: data.title,
         description: clean(data.description),
+        coverImage: clean(data.coverImage),
         type,
         config,
         published: data.published,
@@ -119,6 +160,7 @@ export async function updateCollection(
         slug,
         title: data.title,
         description: clean(data.description),
+        coverImage: clean(data.coverImage),
         published: data.published,
         updatedAt: new Date(),
       })
