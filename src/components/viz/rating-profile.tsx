@@ -25,13 +25,12 @@ import type { Criterion, TopItemData } from "@/lib/types";
 const SLOT_COLORS = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)"];
 const MAX_SELECT = 3;
 
-export function RatingProfile({
-  criteria,
-  items,
-}: {
+interface RatingProfileProps {
   criteria: Criterion[];
   items: TopItemData[];
-}) {
+}
+
+export function RatingProfile({ criteria, items }: RatingProfileProps) {
   const [selected, setSelected] = useState<string[]>(
     items.length ? [items[0].id] : []
   );
@@ -42,7 +41,7 @@ export function RatingProfile({
     .map((id) => items.find((i) => i.id === id))
     .filter((i): i is TopItemData => Boolean(i));
 
-  const toggle = (id: string) =>
+  const handleToggle = (id: string) =>
     setSelected((prev) =>
       prev.includes(id)
         ? prev.filter((x) => x !== id)
@@ -88,7 +87,7 @@ export function RatingProfile({
             <button
               key={it.id}
               type="button"
-              onClick={() => toggle(it.id)}
+              onClick={() => handleToggle(it.id)}
               disabled={!active && selected.length >= MAX_SELECT}
               className={cn(
                 "rounded-md border px-2.5 py-1 font-mono text-[11px] transition-colors disabled:cursor-not-allowed disabled:opacity-40",

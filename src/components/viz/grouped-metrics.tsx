@@ -17,15 +17,17 @@ import {
 } from "@/components/ui/select";
 import type { Criterion, RubricField, TopItemData } from "@/lib/types";
 
+interface GroupedMetricsProps {
+  criteria: Criterion[];
+  fields: RubricField[];
+  items: TopItemData[];
+}
+
 export function GroupedMetrics({
   criteria,
   fields,
   items,
-}: {
-  criteria: Criterion[];
-  fields: RubricField[];
-  items: TopItemData[];
-}) {
+}: GroupedMetricsProps) {
   // Select fields with ≥2 distinct values present across the items.
   const groupable = useMemo(
     () =>

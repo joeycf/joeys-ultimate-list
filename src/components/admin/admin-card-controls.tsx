@@ -3,6 +3,13 @@ import { Pencil, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ConfirmDialog } from "@/components/admin/confirm-dialog";
 
+interface AdminCardControlsProps {
+  id: string;
+  title: string;
+  isDraft: boolean;
+  deleteAction: () => Promise<{ ok?: boolean; error?: string }>;
+}
+
 /**
  * Admin-only overlay for a collection card on the public home. A "Draft" badge
  * (always visible) plus an Edit link + Delete confirm, revealed on hover, in a
@@ -15,12 +22,7 @@ export function AdminCardControls({
   title,
   isDraft,
   deleteAction,
-}: {
-  id: string;
-  title: string;
-  isDraft: boolean;
-  deleteAction: () => Promise<{ ok?: boolean; error?: string }>;
-}) {
+}: AdminCardControlsProps) {
   return (
     <div className="absolute right-2 top-2 z-10 flex items-center gap-1.5">
       {isDraft ? (
@@ -49,7 +51,7 @@ export function AdminCardControls({
               <Trash2 className="size-3.5" />
             </button>
           }
-          title={`Delete “${title}”?`}
+          title={`Delete "${title}"?`}
           description="This permanently deletes the collection and all of its items. This can't be undone."
           confirmLabel="Delete collection"
           successMessage="Collection deleted."

@@ -33,13 +33,12 @@ type Result = {
   fieldErrors?: Record<string, string>;
 };
 
-function ToggleSwitch({
-  checked,
-  onCheckedChange,
-}: {
+interface ToggleSwitchProps {
   checked: boolean;
   onCheckedChange: (v: boolean) => void;
-}) {
+}
+
+function ToggleSwitch({ checked, onCheckedChange }: ToggleSwitchProps) {
   return (
     <button
       type="button"
@@ -61,19 +60,21 @@ function ToggleSwitch({
   );
 }
 
+interface CollectionBasicsFormProps {
+  mode: "create" | "edit";
+  action: (input: CollectionBasicsInput) => Promise<Result>;
+  uploadAction: (formData: FormData) => Promise<{ url?: string; error?: string }>;
+  defaultValues: CollectionBasicsInput;
+  submitLabel: string;
+}
+
 export function CollectionBasicsForm({
   mode,
   action,
   uploadAction,
   defaultValues,
   submitLabel,
-}: {
-  mode: "create" | "edit";
-  action: (input: CollectionBasicsInput) => Promise<Result>;
-  uploadAction: (formData: FormData) => Promise<{ url?: string; error?: string }>;
-  defaultValues: CollectionBasicsInput;
-  submitLabel: string;
-}) {
+}: CollectionBasicsFormProps) {
   const router = useRouter();
   // In edit mode the slug is already set, so don't auto-overwrite from the title.
   const [slugEdited, setSlugEdited] = useState(mode === "edit");
@@ -83,7 +84,7 @@ export function CollectionBasicsForm({
     defaultValues,
   });
 
-  async function onSubmit(values: CollectionBasicsInput) {
+  const handleSubmit = async (values: CollectionBasicsInput) => {
     const res = await action(values);
     if (res?.fieldErrors) {
       for (const [name, message] of Object.entries(res.fieldErrors)) {
@@ -102,11 +103,11 @@ export function CollectionBasicsForm({
     }
     toast.success("Saved.");
     router.refresh();
-  }
+  };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-5">
         <FormField
           control={form.control}
           name="title"

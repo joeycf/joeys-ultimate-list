@@ -7,6 +7,12 @@ const ACCENT: Record<string, string> = {
   muted: "var(--muted-foreground)",
 };
 
+interface PlaceholderImageProps {
+  accent?: "emerald" | "violet" | "gold" | "muted";
+  className?: string;
+  label?: string;
+}
+
 /**
  * Diagonal-striped "no image yet" placeholder, tinted by accent.
  * Real images arrive in Phase 7; until then every cover uses this.
@@ -15,11 +21,7 @@ export function PlaceholderImage({
   accent = "emerald",
   className,
   label,
-}: {
-  accent?: "emerald" | "violet" | "gold" | "muted";
-  className?: string;
-  label?: string;
-}) {
+}: PlaceholderImageProps) {
   const c = ACCENT[accent] ?? ACCENT.emerald;
   return (
     <div

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -16,6 +16,15 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
+interface ConfirmDialogProps {
+  trigger: ReactNode;
+  title: string;
+  description?: string;
+  confirmLabel?: string;
+  successMessage?: string;
+  action: () => Promise<{ ok?: boolean; error?: string }>;
+}
+
 /**
  * Generic destructive confirmation. `action` is a bound Server Action passed
  * from a Server Component (e.g. deleteCollection.bind(null, id)).
@@ -27,19 +36,12 @@ export function ConfirmDialog({
   confirmLabel = "Delete",
   successMessage,
   action,
-}: {
-  trigger: React.ReactNode;
-  title: string;
-  description?: string;
-  confirmLabel?: string;
-  successMessage?: string;
-  action: () => Promise<{ ok?: boolean; error?: string }>;
-}) {
+}: ConfirmDialogProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
 
-  function onConfirm() {
+  const handleConfirm = () => {
     startTransition(async () => {
       const res = await action();
       if (res?.error) {
@@ -50,7 +52,7 @@ export function ConfirmDialog({
       setOpen(false);
       router.refresh();
     });
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -68,7 +70,7 @@ export function ConfirmDialog({
               Cancel
             </Button>
           </DialogClose>
-          <Button variant="destructive" onClick={onConfirm} disabled={pending}>
+          <Button variant="destructive" onClick={handleConfirm} disabled={pending}>
             {pending ? "Deleting…" : confirmLabel}
           </Button>
         </DialogFooter>

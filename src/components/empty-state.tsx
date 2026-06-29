@@ -1,4 +1,12 @@
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+
+interface EmptyStateProps {
+  title: string;
+  description?: string;
+  action?: ReactNode;
+  className?: string;
+}
 
 /** On-brand empty state: emerald diamond mark + title + optional copy/action. */
 export function EmptyState({
@@ -6,12 +14,7 @@ export function EmptyState({
   description,
   action,
   className,
-}: {
-  title: string;
-  description?: string;
-  action?: React.ReactNode;
-  className?: string;
-}) {
+}: EmptyStateProps) {
   return (
     <div
       className={cn(

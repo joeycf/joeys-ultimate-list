@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,17 +44,19 @@ export type ItemValues = {
   note: string | null;
 };
 
+interface ItemFormDialogProps {
+  action: (input: FavoriteItemInput) => Promise<Result>;
+  uploadAction: (formData: FormData) => Promise<{ url?: string; error?: string }>;
+  item?: ItemValues;
+  trigger: ReactNode;
+}
+
 export function ItemFormDialog({
   action,
   uploadAction,
   item,
   trigger,
-}: {
-  action: (input: FavoriteItemInput) => Promise<Result>;
-  uploadAction: (formData: FormData) => Promise<{ url?: string; error?: string }>;
-  item?: ItemValues;
-  trigger: React.ReactNode;
-}) {
+}: ItemFormDialogProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const isEdit = !!item;
@@ -80,7 +82,7 @@ export function ItemFormDialog({
       : emptyValues,
   });
 
-  async function onSubmit(values: FavoriteItemInput) {
+  const handleSubmit = async (values: FavoriteItemInput) => {
     const res = await action(values);
     if (res?.fieldErrors) {
       for (const [name, message] of Object.entries(res.fieldErrors)) {
@@ -96,7 +98,7 @@ export function ItemFormDialog({
     setOpen(false);
     if (!isEdit) form.reset(emptyValues);
     router.refresh();
-  }
+  };
 
   return (
     <Dialog
@@ -129,7 +131,7 @@ export function ItemFormDialog({
 
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit(handleSubmit)}
             className="flex flex-col gap-4"
           >
             <FormField

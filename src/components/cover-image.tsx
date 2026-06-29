@@ -4,12 +4,20 @@ import { cn } from "@/lib/utils";
 
 const BLOB_HOST = /\.public\.blob\.vercel-storage\.com$/;
 
-function isOurBlob(url: string): boolean {
+const isOurBlob = (url: string): boolean => {
   try {
     return BLOB_HOST.test(new URL(url).hostname);
   } catch {
     return false;
   }
+};
+
+interface CoverImageProps {
+  url?: string | null;
+  alt?: string;
+  accent?: "emerald" | "violet" | "gold" | "muted";
+  className?: string;
+  sizes?: string;
 }
 
 /**
@@ -24,13 +32,7 @@ export function CoverImage({
   accent,
   className,
   sizes = "(max-width: 768px) 100vw, 400px",
-}: {
-  url?: string | null;
-  alt?: string;
-  accent?: "emerald" | "violet" | "gold" | "muted";
-  className?: string;
-  sizes?: string;
-}) {
+}: CoverImageProps) {
   if (!url) return <PlaceholderImage accent={accent} className={className} />;
 
   return (

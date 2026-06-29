@@ -4,19 +4,18 @@ import { CoverImage } from "@/components/cover-image";
 import { cn } from "@/lib/utils";
 import type { CollectionWithItems } from "@/db/queries";
 
-/**
- * A clickable Arcade "box you enter" — rounded card + emerald glow on
- * hover. Type tints the badge/edge: top = gold, favorites = violet.
- */
-export function CollectionCard({
-  collection,
-  href,
-}: {
+interface CollectionCardProps {
   collection: CollectionWithItems;
   /** Link target; defaults to the public page. The admin home overrides this
    *  to the edit hub for drafts (whose public page 404s by design). */
   href?: string;
-}) {
+}
+
+/**
+ * A clickable Arcade "box you enter" — rounded card + emerald glow on
+ * hover. Type tints the badge/edge: top = gold, favorites = violet.
+ */
+export function CollectionCard({ collection, href }: CollectionCardProps) {
   const isTop = collection.type === "top";
   const count = collection.items.length;
 

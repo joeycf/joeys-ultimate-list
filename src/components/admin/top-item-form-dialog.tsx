@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { Controller, useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -61,19 +61,21 @@ type FormValues = {
 
 const NONE = "__none__";
 
+interface TopItemFormDialogProps {
+  rubric: Rubric;
+  action: (input: FormValues) => Promise<Result>;
+  uploadAction: (formData: FormData) => Promise<{ url?: string; error?: string }>;
+  item?: TopItem;
+  trigger: ReactNode;
+}
+
 export function TopItemFormDialog({
   rubric,
   action,
   uploadAction,
   item,
   trigger,
-}: {
-  rubric: Rubric;
-  action: (input: FormValues) => Promise<Result>;
-  uploadAction: (formData: FormData) => Promise<{ url?: string; error?: string }>;
-  item?: TopItem;
-  trigger: React.ReactNode;
-}) {
+}: TopItemFormDialogProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const isEdit = !!item;
@@ -106,7 +108,7 @@ export function TopItemFormDialog({
   const watchedRatings = form.watch("ratings");
   const previewScore = computeScore(rubric, watchedRatings ?? {});
 
-  async function onSubmit(values: FormValues) {
+  const handleSubmit = async (values: FormValues) => {
     const res = await action(values);
     if (res?.fieldErrors) {
       for (const [name, message] of Object.entries(res.fieldErrors)) {
@@ -122,7 +124,7 @@ export function TopItemFormDialog({
     setOpen(false);
     if (!isEdit) form.reset(makeDefaults());
     router.refresh();
-  }
+  };
 
   return (
     <Dialog
@@ -142,7 +144,7 @@ export function TopItemFormDialog({
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-4">
             <FormField
               control={form.control}
               name="title"

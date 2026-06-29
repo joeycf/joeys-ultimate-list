@@ -31,15 +31,19 @@ type RubricValues = {
   scoreMode: "sum" | "average" | "weighted";
 };
 
-function uniqueKey(base: string, taken: string[]): string {
+const uniqueKey = (base: string, taken: string[]): string => {
   const root = base || "key";
   if (!taken.includes(root)) return root;
   let n = 2;
   while (taken.includes(`${root}-${n}`)) n++;
   return `${root}-${n}`;
+};
+
+interface KeyTagProps {
+  value: string;
 }
 
-function KeyTag({ value }: { value: string }) {
+function KeyTag({ value }: KeyTagProps) {
   return value ? (
     <p className="mt-2 font-mono text-[9px] tracking-wider text-muted-foreground/60">
       key: {value} <span className="text-muted-foreground/40">(locked)</span>
@@ -51,17 +55,19 @@ function KeyTag({ value }: { value: string }) {
   );
 }
 
+interface RubricBuilderProps {
+  rubric: Rubric;
+  hasItems: boolean;
+  saveAction: (input: RubricValues) => Promise<Result>;
+  recomputeAction: () => Promise<Result>;
+}
+
 export function RubricBuilder({
   rubric,
   hasItems,
   saveAction,
   recomputeAction,
-}: {
-  rubric: Rubric;
-  hasItems: boolean;
-  saveAction: (input: RubricValues) => Promise<Result>;
-  recomputeAction: () => Promise<Result>;
-}) {
+}: RubricBuilderProps) {
   const router = useRouter();
   const form = useForm<RubricValues>({
     defaultValues: {
@@ -84,7 +90,7 @@ export function RubricBuilder({
   const ratings = useFieldArray({ control: form.control, name: "ratings" });
   const fields = useFieldArray({ control: form.control, name: "fields" });
 
-  function genKey(group: "ratings" | "fields", i: number) {
+  const genKey = (group: "ratings" | "fields", i: number) => {
     const cur = form.getValues(`${group}.${i}.key`);
     if (cur) return; // immutable once set
     const slug = slugify(form.getValues(`${group}.${i}.label`));
@@ -93,9 +99,9 @@ export function RubricBuilder({
       .getValues(group)
       .map((row, idx) => (idx === i ? "" : row.key));
     form.setValue(`${group}.${i}.key`, uniqueKey(slug, taken));
-  }
+  };
 
-  async function onSubmit(values: RubricValues) {
+  const handleSubmit = async (values: RubricValues) => {
     const cleaned: RubricValues = {
       scoreMode: values.scoreMode,
       ratings: values.ratings.map((r) => ({ ...r, label: r.label.trim() })),
@@ -124,9 +130,9 @@ export function RubricBuilder({
     }
     toast.success("Rubric saved — all scores recomputed.");
     router.refresh();
-  }
+  };
 
-  async function onRecompute() {
+  const handleRecompute = async () => {
     const res = await recomputeAction();
     if (res?.error) {
       toast.error(res.error);
@@ -134,10 +140,10 @@ export function RubricBuilder({
     }
     toast.success("All scores recomputed.");
     router.refresh();
-  }
+  };
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
+    <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-6">
       {/* Rating criteria */}
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
@@ -259,7 +265,7 @@ export function RubricBuilder({
 
         {fields.fields.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            Optional metadata like “Genre” or “Restaurant”.
+            Optional metadata like &quot;Genre&quot; or &quot;Restaurant&quot;.
           </p>
         ) : (
           <ul className="flex flex-col gap-2">
@@ -310,7 +316,7 @@ export function RubricBuilder({
         <Button type="submit" disabled={form.formState.isSubmitting}>
           {form.formState.isSubmitting ? "Saving…" : "Save rubric"}
         </Button>
-        <Button type="button" variant="outline" onClick={onRecompute}>
+        <Button type="button" variant="outline" onClick={handleRecompute}>
           Recompute all scores
         </Button>
       </div>
@@ -318,17 +324,14 @@ export function RubricBuilder({
   );
 }
 
-function FieldRow({
-  form,
-  index,
-  onBlurLabel,
-  onRemove,
-}: {
+interface FieldRowProps {
   form: UseFormReturn<RubricValues>;
   index: number;
   onBlurLabel: () => void;
   onRemove: () => void;
-}) {
+}
+
+function FieldRow({ form, index, onBlurLabel, onRemove }: FieldRowProps) {
   const type = form.watch(`fields.${index}.type`);
   const options = form.watch(`fields.${index}.options`) ?? [];
   const setOptions = (next: string[]) =>

@@ -9,24 +9,22 @@ import { Button } from "@/components/ui/button";
 const TYPES = ["image/jpeg", "image/png", "image/webp"];
 const MAX_BYTES = 4 * 1024 * 1024;
 
+interface ImageInputProps {
+  value: string;
+  onChange: (url: string) => void;
+  uploadAction: (formData: FormData) => Promise<{ url?: string; error?: string }>;
+}
+
 /**
  * One field, two sources: paste a URL or upload a file (Vercel Blob). Both
  * write the same URL string into the bound RHF field. `uploadAction` is the
  * server `uploadImage` action, passed from the server page.
  */
-export function ImageInput({
-  value,
-  onChange,
-  uploadAction,
-}: {
-  value: string;
-  onChange: (url: string) => void;
-  uploadAction: (formData: FormData) => Promise<{ url?: string; error?: string }>;
-}) {
+export function ImageInput({ value, onChange, uploadAction }: ImageInputProps) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
 
-  async function onFile(file: File) {
+  const handleFile = async (file: File) => {
     // Client-side guard (server re-validates).
     if (!TYPES.includes(file.type)) {
       toast.error("Use a JPEG, PNG, or WebP image.");
@@ -55,7 +53,7 @@ export function ImageInput({
       setUploading(false);
       if (fileRef.current) fileRef.current.value = "";
     }
-  }
+  };
 
   return (
     <div className="flex flex-col gap-2">
@@ -74,7 +72,7 @@ export function ImageInput({
           className="hidden"
           onChange={(e) => {
             const f = e.target.files?.[0];
-            if (f) onFile(f);
+            if (f) handleFile(f);
           }}
         />
         <Button

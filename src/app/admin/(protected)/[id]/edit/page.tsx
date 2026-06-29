@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronDown, ChevronUp, ExternalLink, Plus } from "lucide-react";
@@ -26,11 +27,17 @@ import {
   uploadImage,
 } from "../../actions";
 
-const SectionLabel = ({ children }: { children: React.ReactNode }) => (
-  <h2 className="font-mono text-xs uppercase tracking-[0.25em] text-muted-foreground">
-    {children}
-  </h2>
-);
+interface SectionLabelProps {
+  children: ReactNode;
+}
+
+function SectionLabel({ children }: SectionLabelProps) {
+  return (
+    <h2 className="font-mono text-xs uppercase tracking-[0.25em] text-muted-foreground">
+      {children}
+    </h2>
+  );
+}
 
 const fmtScore = (n: number | null) =>
   n == null ? "—" : (Math.round(n * 10) / 10).toFixed(1);
@@ -259,7 +266,7 @@ export default async function EditCollectionPage({
                               Delete
                             </Button>
                           }
-                          title={`Delete “${item.title}”?`}
+                          title={`Delete "${item.title}"?`}
                           description="This removes the item from the collection."
                           confirmLabel="Delete item"
                           successMessage="Item deleted."
@@ -392,7 +399,7 @@ export default async function EditCollectionPage({
                           Delete
                         </Button>
                       }
-                      title={`Delete “${item.title}”?`}
+                      title={`Delete "${item.title}"?`}
                       description="This removes the item from the collection."
                       confirmLabel="Delete item"
                       successMessage="Item deleted."

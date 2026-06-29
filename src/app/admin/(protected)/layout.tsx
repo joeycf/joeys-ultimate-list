@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { requireAdmin } from "@/lib/auth";
 import { logout } from "@/app/admin/actions";
@@ -10,7 +11,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 export default async function ProtectedAdminLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   await requireAdmin();
 

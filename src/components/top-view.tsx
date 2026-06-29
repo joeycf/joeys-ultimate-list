@@ -6,17 +6,19 @@ import { cn } from "@/lib/utils";
 import type { CollectionWithItems } from "@/db/queries";
 import type { Criterion, ItemRatings, Rubric, TopItemData } from "@/lib/types";
 
-function clamp(n: number) {
-  return Math.max(0, Math.min(100, n));
-}
+const clamp = (n: number) => Math.max(0, Math.min(100, n));
 
-function formatScore(n: number | null | undefined): string {
+const formatScore = (n: number | null | undefined): string => {
   if (n == null) return "—";
   return (Math.round(n * 10) / 10).toFixed(1);
+};
+
+interface TopViewProps {
+  collection: CollectionWithItems;
 }
 
 /** Top = a scored leaderboard (sorted by score desc) + summary stat cards. */
-export function TopView({ collection }: { collection: CollectionWithItems }) {
+export function TopView({ collection }: TopViewProps) {
   const rubric = (collection.config as Rubric | null) ?? null;
   const criteria = rubric?.ratings ?? [];
 
@@ -107,17 +109,14 @@ export function TopView({ collection }: { collection: CollectionWithItems }) {
   );
 }
 
-function StatCard({
-  label,
-  value,
-  caption,
-  accent,
-}: {
+interface StatCardProps {
   label: string;
   value: string;
   caption?: string;
   accent?: boolean;
-}) {
+}
+
+function StatCard({ label, value, caption, accent }: StatCardProps) {
   return (
     <div className="rounded-lg border border-border bg-card p-5">
       <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
@@ -138,6 +137,16 @@ function StatCard({
   );
 }
 
+interface LeaderboardRowProps {
+  rank: number;
+  title: string;
+  score: number | null;
+  imageUrl: string | null;
+  ratings: ItemRatings;
+  criteria: Criterion[];
+  maxScale: number;
+}
+
 function LeaderboardRow({
   rank,
   title,
@@ -146,15 +155,7 @@ function LeaderboardRow({
   ratings,
   criteria,
   maxScale,
-}: {
-  rank: number;
-  title: string;
-  score: number | null;
-  imageUrl: string | null;
-  ratings: ItemRatings;
-  criteria: Criterion[];
-  maxScale: number;
-}) {
+}: LeaderboardRowProps) {
   const isFirst = rank === 1;
   const padded = String(rank).padStart(2, "0");
 
@@ -220,15 +221,13 @@ function LeaderboardRow({
   );
 }
 
-function CriterionBars({
-  criteria,
-  ratings,
-  className,
-}: {
+interface CriterionBarsProps {
   criteria: Criterion[];
   ratings: ItemRatings;
   className?: string;
-}) {
+}
+
+function CriterionBars({ criteria, ratings, className }: CriterionBarsProps) {
   return (
     <div className={cn("grid grid-cols-2 gap-x-4 gap-y-2 sm:grid-cols-4", className)}>
       {criteria.map((c) => {

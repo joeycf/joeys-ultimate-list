@@ -94,7 +94,7 @@ export default async function AdminDashboard() {
                         Delete
                       </Button>
                     }
-                    title={`Delete “${c.title}”?`}
+                    title={`Delete "${c.title}"?`}
                     description="This permanently deletes the collection and all of its items. This can't be undone."
                     confirmLabel="Delete collection"
                     successMessage="Collection deleted."

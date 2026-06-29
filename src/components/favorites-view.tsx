@@ -2,12 +2,12 @@ import { Heart } from "lucide-react";
 import { CoverImage } from "@/components/cover-image";
 import type { CollectionWithItems } from "@/db/queries";
 
-/** Favorites = a flat, unscored card grid with violet tag accents. */
-export function FavoritesView({
-  collection,
-}: {
+interface FavoritesViewProps {
   collection: CollectionWithItems;
-}) {
+}
+
+/** Favorites = a flat, unscored card grid with violet tag accents. */
+export function FavoritesView({ collection }: FavoritesViewProps) {
   const items = [...collection.items].sort((a, b) => a.position - b.position);
 
   if (items.length === 0) {

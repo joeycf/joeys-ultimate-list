@@ -36,19 +36,20 @@ import type { Criterion, RubricField, TopItemData } from "@/lib/types";
 const fmtScore = (n: number) => (Math.round(n * 10) / 10).toFixed(1);
 const ALL = "__all__";
 
-function isNumericCol(id: string) {
-  return id === "rank" || id === "score" || id.startsWith("r_");
+const isNumericCol = (id: string) =>
+  id === "rank" || id === "score" || id.startsWith("r_");
+
+interface TopDataTableProps {
+  criteria: Criterion[];
+  fields: RubricField[];
+  items: TopItemData[];
 }
 
 export function TopDataTable({
   criteria,
   fields,
   items,
-}: {
-  criteria: Criterion[];
-  fields: RubricField[];
-  items: TopItemData[];
-}) {
+}: TopDataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([
     { id: "score", desc: true },
   ]);
